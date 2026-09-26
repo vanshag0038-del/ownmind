@@ -1,6 +1,7 @@
 import { concepts } from "@/lib/concepts"
 import { ConceptSection } from "@/components/concept-section"
 import { InteractionsSection } from "@/components/interactions-section"
+import { ApprovalDemo } from "@/components/approval-demo"
 
 export default function Page() {
   return (
@@ -22,6 +23,8 @@ export default function Page() {
           ))}
         </nav>
       </header>
+
+      <ApprovalDemo />
 
       {concepts.map((c) => (
         <ConceptSection key={c.id} concept={c} />
