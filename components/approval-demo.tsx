@@ -115,21 +115,14 @@ export function ApprovalDemo() {
       </h2>
       <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[#EDE7DA]/70">
         Nothing the AI proposes runs until you seal it. Hold the brass seal to sign an action, or deny it. Every
-        decision is hashed into the audit log on the right, and the Trust bar updates on every page.
+        decision is hashed and stamped on the card, and the Trust bar updates on every page.
       </p>
-      <a
-        href="#audit-log"
-        className="mt-4 inline-block text-xs uppercase tracking-[0.2em] underline-offset-4 hover:underline"
-        style={{ color: BRASS }}
-      >
-        {"Jump to audit log →"}
-      </a>
 
       <div className="mt-10 overflow-hidden rounded-lg border border-[#2A2620] bg-[#1B1813]">
         <TrustBar pending={pending} chain={chain} entries={log.length} />
 
-        <div className="flex flex-col gap-8 p-5 md:flex-row md:p-8">
-          <div className="flex flex-1 flex-col gap-5">
+        <div className="p-5 md:p-8">
+          <div className="mx-auto flex max-w-3xl flex-col gap-5">
             <div className="flex items-baseline justify-between">
               <h3 className="text-2xl" style={{ fontFamily: "var(--font-fraunces)" }}>
                 III. Approvals
@@ -152,8 +145,6 @@ export function ApprovalDemo() {
               />
             ))}
           </div>
-
-          <AuditLog entries={log} />
         </div>
       </div>
     </section>
@@ -398,55 +389,5 @@ function Imprint({ status }: { status: Exclude<Status, "pending"> }) {
       <span className="text-lg font-bold tracking-[0.25em]">{status === "signed" ? "SIGNED" : "DENIED"}</span>
       <span className="mt-1 text-[9px] tracking-[0.2em]">LEDGER · LOCAL</span>
     </div>
-  )
-}
-
-function AuditLog({ entries }: { entries: AuditEntry[] }) {
-  return (
-    <aside
-      id="audit-log"
-      aria-labelledby="audit-title"
-      className="flex w-full scroll-mt-8 flex-col gap-4 self-start rounded-md border border-[#2A2620] bg-[#15130F] p-5 md:sticky md:top-6 md:w-80"
-    >
-      <div className="flex items-baseline justify-between gap-3">
-        <h3 id="audit-title" className="text-2xl" style={{ fontFamily: "var(--font-fraunces)" }}>
-          IV. Audit log
-        </h3>
-        <span className="text-[11px] uppercase tracking-[0.2em]" style={{ color: BRASS }}>
-          {entries.length} {entries.length === 1 ? "entry" : "entries"}
-        </span>
-      </div>
-      <p className="text-xs leading-relaxed text-[#EDE7DA]/55">
-        Append-only. Each entry stores the previous entry&apos;s hash, so editing any past decision breaks the chain.
-      </p>
-      <ol className="flex flex-col">
-        <li className="border-l border-[#2A2620] pb-4 pl-4 text-[11px] text-[#EDE7DA]/40">
-          #0 Genesis · {short(GENESIS)}
-        </li>
-        {entries.map((e) => (
-          <li
-            key={e.index}
-            className="relative border-l pb-4 pl-4 text-[11px] motion-safe:animate-in motion-safe:fade-in"
-            style={{ borderColor: e.label.startsWith("SIGNED") ? TEAL : RUST }}
-          >
-            <span
-              className="absolute -left-[5px] top-1 size-2.5 rounded-full"
-              style={{ background: e.label.startsWith("SIGNED") ? TEAL : RUST }}
-              aria-hidden
-            />
-            <p className="text-[#EDE7DA]/85">
-              #{e.index} {e.label}
-            </p>
-            <p className="mt-1 text-[#EDE7DA]/45">prev {short(e.prev)}</p>
-            <p className="text-[#8FC3B7]">hash {short(e.hash)}</p>
-          </li>
-        ))}
-        {entries.length === 0 && (
-          <li className="pl-4 text-xs italic text-[#EDE7DA]/40" style={{ fontFamily: "var(--font-fraunces)" }}>
-            Sign or deny an action to write the first entry.
-          </li>
-        )}
-      </ol>
-    </aside>
   )
 }
