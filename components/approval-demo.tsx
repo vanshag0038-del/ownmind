@@ -202,10 +202,11 @@ function ActionCard({
   return (
     <article
       aria-label={action.title}
-      className="relative flex flex-col gap-5 rounded-md border bg-[#EDE7DA]/[0.03] p-5 transition-colors duration-500 sm:flex-row sm:items-center"
+      className={`relative flex flex-col gap-5 rounded-md border bg-[#EDE7DA]/[0.03] p-5 transition-colors duration-500 sm:flex-row sm:items-center ${status !== "pending" ? "card-shake" : ""}`}
       style={{ borderColor: accent, background: status === "signed" ? "rgba(47,110,98,0.12)" : undefined }}
     >
-      <div className="flex-1">
+      <div className="relative flex-1">
+        {status !== "pending" && <Imprint status={status} />}
         <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.15em]">
           <span style={{ color: accent }}>
             {status === "pending" ? "Unsigned" : status === "signed" ? "Signed & executed" : "Denied"}
@@ -344,9 +345,16 @@ function WaxSeal({ status, onSealed }: { status: Status; onSealed: () => void })
             strokeDashoffset={signed ? 0 : circ * (1 - progress)}
           />
         </svg>
+        {stamped && (
+          <span
+            aria-hidden
+            className="seal-ripple pointer-events-none absolute inset-0 rounded-full border-2"
+            style={{ borderColor: TEAL }}
+          />
+        )}
         <span
           aria-hidden
-          className="grid size-[70px] place-items-center rounded-full text-3xl motion-safe:transition-transform motion-safe:duration-200"
+          className={`relative grid size-[70px] place-items-center rounded-full text-3xl ${stamped ? "seal-slam" : "motion-safe:transition-transform motion-safe:duration-200"}`}
           style={{
             fontFamily: "var(--font-fraunces)",
             fontStyle: "italic",
@@ -359,7 +367,7 @@ function WaxSeal({ status, onSealed }: { status: Status; onSealed: () => void })
               : signed
                 ? "inset 0 2px 6px rgba(0,0,0,0.35), 0 0 0 4px rgba(47,110,98,0.25)"
                 : "0 6px 16px rgba(0,0,0,0.45), inset 0 -3px 6px rgba(0,0,0,0.25)",
-            transform: pressing ? `scale(${1 - progress * 0.12})` : stamped ? "scale(1.04)" : "scale(1)",
+            transform: stamped ? undefined : pressing ? `scale(${1 - progress * 0.12})` : "scale(1)",
           }}
         >
           L
@@ -368,6 +376,20 @@ function WaxSeal({ status, onSealed }: { status: Status; onSealed: () => void })
       <span className="text-[10px] uppercase tracking-[0.15em]" style={{ color: signed ? "#8FC3B7" : BRASS }}>
         {signed ? "Sealed" : pressing ? "Keep holding…" : "Hold to sign"}
       </span>
+    </div>
+  )
+}
+
+function Imprint({ status }: { status: Exclude<Status, "pending"> }) {
+  const color = status === "signed" ? "#8FC3B7" : RUST
+  return (
+    <div
+      aria-hidden
+      className="imprint-thump pointer-events-none absolute -top-1 right-0 z-10 flex flex-col items-center rounded-sm border-[3px] border-double px-3 py-1 leading-none"
+      style={{ borderColor: color, color, fontFamily: "var(--font-jetbrains)" }}
+    >
+      <span className="text-lg font-bold tracking-[0.25em]">{status === "signed" ? "SIGNED" : "DENIED"}</span>
+      <span className="mt-1 text-[9px] tracking-[0.2em]">LEDGER · LOCAL</span>
     </div>
   )
 }
