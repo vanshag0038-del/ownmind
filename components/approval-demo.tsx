@@ -115,8 +115,15 @@ export function ApprovalDemo() {
       </h2>
       <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[#EDE7DA]/70">
         Nothing the AI proposes runs until you seal it. Hold the brass seal to sign an action, or deny it. Every
-        decision is hashed into the audit chain below, and the Trust bar updates on every page.
+        decision is hashed into the audit log on the right, and the Trust bar updates on every page.
       </p>
+      <a
+        href="#audit-log"
+        className="mt-4 inline-block text-xs uppercase tracking-[0.2em] underline-offset-4 hover:underline"
+        style={{ color: BRASS }}
+      >
+        {"Jump to audit log →"}
+      </a>
 
       <div className="mt-10 overflow-hidden rounded-lg border border-[#2A2620] bg-[#1B1813]">
         <TrustBar pending={pending} chain={chain} entries={log.length} />
@@ -396,10 +403,22 @@ function Imprint({ status }: { status: Exclude<Status, "pending"> }) {
 
 function AuditLog({ entries }: { entries: AuditEntry[] }) {
   return (
-    <aside aria-labelledby="audit-title" className="flex w-full flex-col gap-4 md:w-72">
-      <h3 id="audit-title" className="text-2xl" style={{ fontFamily: "var(--font-fraunces)" }}>
-        IV. Ledger
-      </h3>
+    <aside
+      id="audit-log"
+      aria-labelledby="audit-title"
+      className="flex w-full scroll-mt-8 flex-col gap-4 self-start rounded-md border border-[#2A2620] bg-[#15130F] p-5 md:sticky md:top-6 md:w-80"
+    >
+      <div className="flex items-baseline justify-between gap-3">
+        <h3 id="audit-title" className="text-2xl" style={{ fontFamily: "var(--font-fraunces)" }}>
+          IV. Audit log
+        </h3>
+        <span className="text-[11px] uppercase tracking-[0.2em]" style={{ color: BRASS }}>
+          {entries.length} {entries.length === 1 ? "entry" : "entries"}
+        </span>
+      </div>
+      <p className="text-xs leading-relaxed text-[#EDE7DA]/55">
+        Append-only. Each entry stores the previous entry&apos;s hash, so editing any past decision breaks the chain.
+      </p>
       <ol className="flex flex-col">
         <li className="border-l border-[#2A2620] pb-4 pl-4 text-[11px] text-[#EDE7DA]/40">
           #0 Genesis · {short(GENESIS)}
